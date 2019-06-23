@@ -1,0 +1,104 @@
+#define lea_number 200//这个变量一定要同步修改
+#define text_number 10
+
+
+//取样
+while(learn==0);
+			 for(t=0;t<lea_number;t++)
+			 {
+				 finger1[0][t]=FDC2214_read_CHx(0)/10;//手势1
+				printf("%d\r\n",finger1[0][t]);
+			 }
+
+
+
+//测距（求平均值）
+while(1)
+	{
+
+		if(mod==1)
+		{
+				
+		for(ch=0;ch<4;ch++) fingerx_check_avg[ch]=0;//清空一次
+
+		for(q=0;q<text_number;q++)
+		{
+			fingerx_check[0][q]=FDC2214_read_CHx(0)/10;
+			
+			//正好取平均的到RS
+			fingerx_check_avg[0]+=fingerx_check[0][q];
+		}
+		fingerx_check_avg[0]=fingerx_check_avg[0]/text_number;
+    
+    
+    //取K*值，符合范围的个数
+    //对比手势1 4个通道
+		for(i=0;i<lea_number;i++)
+		{
+			if(fingerx_check_avg[0]>=finger1[0][i])
+			{
+				if(abs(fingerx_check_avg[0]-finger1[0][i])<=step1UP) check1_sum++;
+			}
+			else
+			{
+				if(abs(finger1[0][i]-fingerx_check_avg[0])<=step1DOWN) check1_sum++;
+			}
+			
+		}
+    
+    
+    
+    
+   //K*与K比较
+    	if(display_flag1)
+		{
+				 LCD_Clear(WHITE);
+			display_flag1=0;
+		}
+	if(display_temp<check0_sum) display_temp=check0_sum;
+	if(display_temp<check1_sum) display_temp=check1_sum;
+	if(display_temp<check2_sum) display_temp=check2_sum;
+	if(display_temp<check3_sum) display_temp=check3_sum;
+	if(display_temp<check4_sum) display_temp=check4_sum;
+	if(display_temp<check5_sum) display_temp=check5_sum;
+			
+	if(display_temp==check5_sum) check5_js++; 
+	if(display_temp==check4_sum) check4_js++; 
+	if(display_temp==check3_sum) check3_js++; 
+	if(display_temp==check2_sum) check2_js++; 
+	if(display_temp==check1_sum) check1_js++; 
+	if(display_temp==check0_sum) check0_js++; 
+		/*
+			printf("display_temp:%d\r\n",display_temp);
+			printf("check0_js:%d\r\n",check0_js);
+			printf("check1_js:%d\r\n",check1_js);
+			printf("check2_js:%d\r\n",check2_js);
+			printf("check3_js:%d\r\n",check3_js);
+			printf("check4_js:%d\r\n",check4_js);
+			printf("check5_js:%d\r\n",check5_js);
+			*/
+			
+			if(abs(fk-(FDC2214_read_CHx(0)/10))<7000)
+			{
+				LCD_ShowString(30,100,210,40,40,"空空空空");
+			}
+
+			if((check0_js==4)||(check1_js==4)||(check2_js==4)||(check3_js==4)||(check4_js==4)||(check5_js==4))
+			{
+				
+			 //if(check0_js==3) LCD_ShowString(30,100,210,40,40,"无手指");
+				if(check1_js==4) LCD_ShowString(30,100,210,40,40,"一个手指");
+				if(check2_js==4) LCD_ShowString(30,100,210,40,40,"二个手指");
+				if(check3_js==4) LCD_ShowString(30,100,210,40,40,"三个手指");
+				if(check4_js==4) LCD_ShowString(30,100,210,40,40,"四个手指");
+				if(check5_js==4) LCD_ShowString(30,100,210,40,40,"五个手指");
+
+				check0_js=0;
+				check1_js=0;
+				check2_js=0;
+				check3_js=0;
+				check4_js=0;
+				check5_js=0;
+			}
+
+    
